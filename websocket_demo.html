@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <button id="connect">连接</button>
+    <button id="send" disabled='true'>发送</button>
+    如下: <br>
+    <span id="recv"></span>
+    <script>
+        let connect = document.querySelector('#connect')
+        let send = document.querySelector('#send')
+        let recv = document.querySelector('#recv')
+        let ws = null
+        connect.onclick = function(){
+            ws = new WebSocket('ws://localhost:9998')
+            ws.onopen = ()=>{
+                console.log('succcess...')
+                send.disabled = false
+            }
+            ws.onclose = ()=>{
+                console.log('failed or close...')
+                send.disabled = true
+            }
+            ws.onmessage = msg=>{
+                console.log('coming...')
+                console.log(msg)
+                recv.innerHTML = msg.data 
+            }
+        }
+        send.onclick = function(){
+            ws.send(JSON.stringify({
+                action:'fullScreen',
+                socketType:'fullScreen',
+                chartName:'trend',
+                value:true
+            }))
+        }
+    </script>
+</body>
+</html>
